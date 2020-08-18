@@ -1,0 +1,437 @@
+[
+    {
+        "id": "26cc2108.b3164e",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "87188b45.5d0a68",
+        "type": "ui_form",
+        "z": "26cc2108.b3164e",
+        "name": "",
+        "label": "",
+        "group": "1cc09a88.ecb7b5",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "Enter Name",
+                "value": "name",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Enter E-mail",
+                "value": "email",
+                "type": "email",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Enter Password",
+                "value": "password",
+                "type": "password",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "name": "",
+            "email": "",
+            "password": ""
+        },
+        "payload": "",
+        "submit": "create",
+        "cancel": "cancel",
+        "topic": "",
+        "x": 130,
+        "y": 160,
+        "wires": [
+            [
+                "3bee7c0c.286e44",
+                "40f9f2f5.4a755c"
+            ]
+        ]
+    },
+    {
+        "id": "3bee7c0c.286e44",
+        "type": "function",
+        "z": "26cc2108.b3164e",
+        "name": "",
+        "func": "msg.payload={\n    _id:msg.payload.email,\n    Name:msg.payload.name,\n    Emailid:msg.payload.email,\n    password:msg.payload.password,\n}\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 320,
+        "y": 180,
+        "wires": [
+            [
+                "3bc96e02.437112"
+            ]
+        ]
+    },
+    {
+        "id": "3bc96e02.437112",
+        "type": "cloudant out",
+        "z": "26cc2108.b3164e",
+        "name": "cloudant",
+        "cloudant": "",
+        "database": "sample",
+        "service": "node-red-htjxi-2020--cloudant-1597406359438-16722",
+        "payonly": true,
+        "operation": "insert",
+        "x": 540,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "40f9f2f5.4a755c",
+        "type": "debug",
+        "z": "26cc2108.b3164e",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 350,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "64da6d18.a79aa4",
+        "type": "ui_form",
+        "z": "26cc2108.b3164e",
+        "name": "",
+        "label": "",
+        "group": "a6eab689.e47848",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "Enter email",
+                "value": "email",
+                "type": "email",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Enter password",
+                "value": "password",
+                "type": "password",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "email": "",
+            "password": ""
+        },
+        "payload": "",
+        "submit": "Done",
+        "cancel": "cancel",
+        "topic": "",
+        "x": 70,
+        "y": 380,
+        "wires": [
+            [
+                "dccb18b2.4cc8b8"
+            ]
+        ]
+    },
+    {
+        "id": "dccb18b2.4cc8b8",
+        "type": "function",
+        "z": "26cc2108.b3164e",
+        "name": "",
+        "func": "global.set('emailid',msg.payload.email);\nglobal.set('password',msg.payload.password);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 260,
+        "y": 380,
+        "wires": [
+            [
+                "1058f16c.343fef"
+            ]
+        ]
+    },
+    {
+        "id": "1058f16c.343fef",
+        "type": "function",
+        "z": "26cc2108.b3164e",
+        "name": "",
+        "func": "var emailid=global.get('emailid');\nmsg.payload=\"emailid:\"+emailid;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 480,
+        "y": 380,
+        "wires": [
+            [
+                "c971eda1.2d387"
+            ]
+        ]
+    },
+    {
+        "id": "c971eda1.2d387",
+        "type": "cloudant in",
+        "z": "26cc2108.b3164e",
+        "name": "",
+        "cloudant": "",
+        "database": "sample",
+        "service": "node-red-htjxi-2020--cloudant-1597406359438-16722",
+        "search": "_idx_",
+        "design": "user",
+        "index": "user",
+        "x": 640,
+        "y": 380,
+        "wires": [
+            [
+                "3a231e69.3dca12"
+            ]
+        ]
+    },
+    {
+        "id": "3a231e69.3dca12",
+        "type": "function",
+        "z": "26cc2108.b3164e",
+        "name": "",
+        "func": "if(msg.payload[0].password===global.get('password')){\n    msg.payload=\"Login Successfull\";\n}\n  else{\n      msg.payload=\"Login failed\";\n  }\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 780,
+        "y": 380,
+        "wires": [
+            [
+                "f30a20c4.0fd83"
+            ]
+        ]
+    },
+    {
+        "id": "f30a20c4.0fd83",
+        "type": "ui_text",
+        "z": "26cc2108.b3164e",
+        "group": "a6eab689.e47848",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "text",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 950,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "ccdfff20.5e402",
+        "type": "ui_form",
+        "z": "26cc2108.b3164e",
+        "name": "",
+        "label": "",
+        "group": "c758f666.6b5b58",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "User input",
+                "value": "input",
+                "type": "text",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "input": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "cancel",
+        "topic": "",
+        "x": 80,
+        "y": 520,
+        "wires": [
+            [
+                "55564c39.b50894"
+            ]
+        ]
+    },
+    {
+        "id": "55564c39.b50894",
+        "type": "function",
+        "z": "26cc2108.b3164e",
+        "name": "",
+        "func": "msg.payload = msg.payload.input;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 270,
+        "y": 520,
+        "wires": [
+            [
+                "d71934e7.79a768"
+            ]
+        ]
+    },
+    {
+        "id": "d71934e7.79a768",
+        "type": "watson-conversation-v1",
+        "z": "26cc2108.b3164e",
+        "name": "",
+        "workspaceid": "b207edfe-11bd-4fe4-8930-268bc08be0c1",
+        "multiuser": false,
+        "context": true,
+        "empty-payload": false,
+        "service-endpoint": "https://api.eu-gb.discovery.watson.cloud.ibm.com/instances/bab3bc74-231b-4933-b332-a6c882a144ca",
+        "timeout": "",
+        "optout-learning": false,
+        "x": 440,
+        "y": 520,
+        "wires": [
+            [
+                "1994a9eb.4884c6",
+                "b6b62c4e.4295a"
+            ]
+        ]
+    },
+    {
+        "id": "1994a9eb.4884c6",
+        "type": "debug",
+        "z": "26cc2108.b3164e",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 570,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "b6b62c4e.4295a",
+        "type": "function",
+        "z": "26cc2108.b3164e",
+        "name": "",
+        "func": "msg.payload = msg.payload.output.generic[0].text;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 630,
+        "y": 520,
+        "wires": [
+            [
+                "a520f075.2d82f",
+                "fa6cb422.1559a8"
+            ]
+        ]
+    },
+    {
+        "id": "a520f075.2d82f",
+        "type": "ui_text",
+        "z": "26cc2108.b3164e",
+        "group": "c758f666.6b5b58",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Bot response",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 800,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "fa6cb422.1559a8",
+        "type": "ui_audio",
+        "z": "26cc2108.b3164e",
+        "name": "",
+        "group": "c758f666.6b5b58",
+        "voice": "",
+        "always": "",
+        "x": 810,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "1cc09a88.ecb7b5",
+        "type": "ui_group",
+        "z": "",
+        "name": "registration page",
+        "tab": "1e124366.40515d",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "a6eab689.e47848",
+        "type": "ui_group",
+        "z": "",
+        "name": "Login form",
+        "tab": "56cf427f.12850c",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "c758f666.6b5b58",
+        "type": "ui_group",
+        "z": "",
+        "name": "Bot",
+        "tab": "7ecfd782.dc2b38",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "1e124366.40515d",
+        "type": "ui_tab",
+        "z": "",
+        "name": "registration ",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "56cf427f.12850c",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Login Page",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "7ecfd782.dc2b38",
+        "type": "ui_tab",
+        "z": "",
+        "name": "customer help",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
